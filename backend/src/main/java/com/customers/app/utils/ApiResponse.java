@@ -1,9 +1,9 @@
 package com.customers.app.utils;
 
+import com.customers.app.utils.pagination.PageResponse;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
@@ -16,7 +16,7 @@ public class ApiResponse<T> {
     private T data;
     private HttpStatus status;
     private String errorMessage;
-    private Page<T> page;
+    private PageResponse<T> page;
 
     public static ApiResponse<?> status(HttpStatus status) {
         return ApiResponse.builder()
@@ -51,9 +51,9 @@ public class ApiResponse<T> {
                 .build();
     }
 
-    public static <T> ApiResponse<Page<T>> pageResponse(Page<T> allCustomers) {
-        return ApiResponse.<Page<T>>builder()
-                .data(allCustomers)
+    public static <T> ApiResponse<T> pageResponse(PageResponse<T> page) {
+        return ApiResponse.<T>builder()
+                .page(page)
                 .build();
     }
 }

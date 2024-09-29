@@ -3,9 +3,9 @@ package com.customers.app.controllers;
 import com.customers.app.entities.Customer;
 import com.customers.app.services.CustomerService;
 import com.customers.app.utils.ApiResponse;
+import com.customers.app.utils.Pagination;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,9 +24,9 @@ public class CustomerController {
     private final CustomerService service;
 
     @GetMapping
-    public ApiResponse<?> getAllCustomers(PageRequest pageRequest) {
+    public ApiResponse<?> getAllCustomers(Pagination pagination) {
         log.info("Getting all customers");
-        return ApiResponse.pageResponse(service.getAllCustomers(pageRequest));
+        return ApiResponse.pageResponse(service.getAllCustomers(pagination));
     }
 
     @GetMapping("/:id")
