@@ -1,11 +1,14 @@
 package com.customers.app.controllers;
 
 import com.customers.app.entities.Customer;
+import com.customers.app.exceptions.EntityNotFoundException;
+import com.customers.app.exceptions.SyncCustomerException;
 import com.customers.app.services.CustomerService;
-import com.customers.app.utils.ApiResponse;
-import com.customers.app.utils.Pagination;
+import com.customers.app.services.external.SyncCustomerService;
+import com.customers.app.utils.pagination.Pagination;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,31 +25,44 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CustomerController {
     private final CustomerService service;
+    private final SyncCustomerService syncService;
 
     @GetMapping
-    public ApiResponse<?> getAllCustomers(Pagination pagination) {
+    public ResponseEntity<?> getAllCustomers(Pagination pagination) {
         log.info("Getting all customers");
-        return ApiResponse.pageResponse(service.getAllCustomers(pagination));
+        return ResponseEntity.ok(service.getAllCustomers(pagination));
     }
 
     @GetMapping("/:id")
-    public ApiResponse<Customer> getCustomerById(@PathVariable String id) {
-        return ApiResponse.success(service.getCustomerById(id));
+    public ResponseEntity<Customer> getCustomerById(@PathVariable String id) {
+        return ResponseEntity.ok(service.getCustomerById(id));
     }
 
     @PostMapping
-    public ApiResponse<Customer> addCustomer(@RequestBody Customer customer) {
-        return ApiResponse.success("Customer added successfully", service.addCustomer(customer));
+    public ResponseEntity<Customer> addCustomer(@RequestBody Customer add) {
+        final Customer added = service.addCustomer(add);
+        return ResponseEntity.accepted().body(added);
     }
 
     @PutMapping
-    public ApiResponse<Customer> updateCustomer(@RequestBody Customer customer) {
-        return ApiResponse.success("Customer updated successfully with id: " + customer.getUuid(), service.updateCustomer(customer));
+    public ResponseEntity<Customer> updateCustomer(@RequestBody Customer update) {
+        final Customer updated = service.updateCustomer(update);
+        return ResponseEntity.accepted().body(updated);
     }
 
     @DeleteMapping
-    public ApiResponse<?> deleteCustomer(@RequestParam String id) {
+    public ResponseEntity<?> deleteCustomer(@RequestParam String id) {
         service.deleteCustomer(id);
-        return ApiResponse.success("Customer deleted successfully");
+        return ResponseEntity.ok("Customer deleted: " + id);
+    }
+
+    @GetMapping("/sync")
+    public ResponseEntity<?> syncData() {
+        try {
+            syncService.syncCustomers();
+            return ResponseEntity.ok("Data synchronized successfully");
+        } catch (EntityNotFoundException | SyncCustomerException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

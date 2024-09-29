@@ -5,10 +5,10 @@ import com.customers.app.records.auth.AuthResponse;
 import com.customers.app.records.auth.LoginRequest;
 import com.customers.app.records.auth.SignupRequest;
 import com.customers.app.services.AuthService;
-import com.customers.app.utils.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,17 +23,17 @@ public class AuthController {
     private final AuthService service;
 
     @PostMapping("/signup")
-    public ApiResponse<AuthResponse> register(@RequestBody SignupRequest request) {
+    public ResponseEntity<?> register(@RequestBody SignupRequest request) {
         try {
-            return ApiResponse.success(service.register(request));
+            return ResponseEntity.ok(service.register(request));
         } catch (EntityAlreadyExistsException e) {
-            return ApiResponse.failure(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PostMapping("/login")
-    public ApiResponse<AuthResponse> authenticate(@RequestBody LoginRequest request) {
-        return ApiResponse.success(service.login(request));
+    public ResponseEntity<AuthResponse> authenticate(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(service.login(request));
     }
 
     @PostMapping("/refresh-token")

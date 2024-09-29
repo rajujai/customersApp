@@ -2,18 +2,16 @@ package com.customers.app.services;
 
 import com.customers.app.entities.Customer;
 import com.customers.app.repositories.CustomerRepository;
-import com.customers.app.utils.Pagination;
 import com.customers.app.utils.pagination.PageResponse;
+import com.customers.app.utils.pagination.Pagination;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CustomerService {
     private final CustomerRepository repository;
-
-    public CustomerService(CustomerRepository repository) {
-        this.repository = repository;
-    }
 
     public PageResponse<Customer> getAllCustomers(final Pagination pagination) {
         final Page<Customer> page = repository.findAll(pagination.pageRequest());

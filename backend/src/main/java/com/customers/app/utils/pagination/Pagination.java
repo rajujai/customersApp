@@ -1,4 +1,4 @@
-package com.customers.app.utils;
+package com.customers.app.utils.pagination;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

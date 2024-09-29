@@ -1,6 +1,5 @@
 package com.customers.app.utils.pagination;
 
-import com.customers.app.utils.Pagination;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.domain.Page;
