@@ -8,6 +8,7 @@ import com.customers.app.services.external.SyncCustomerService;
 import com.customers.app.utils.pagination.Pagination;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +42,7 @@ public class CustomerController {
     @PostMapping
     public ResponseEntity<Customer> addCustomer(@RequestBody Customer add) {
         final Customer added = service.addCustomer(add);
-        return ResponseEntity.accepted().body(added);
+        return ResponseEntity.status(HttpStatus.CREATED).body(added);
     }
 
     @PutMapping
